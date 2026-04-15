@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f5f4;
+      --bg3: #eeedeb;
+      --text: #1a1a1a;
+      --text2: #6b6b6b;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --success: #2d7a3a;
+      --danger: #c0392b;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1e;
+        --bg2: #2c2c2e;
+        --bg3: #3a3a3c;
+        --text: #f2f2f7;
+        --text2: #aeaeb2;
+        --border: rgba(255,255,255,0.10);
+        --border2: rgba(255,255,255,0.20);
+        --success: #4cd964;
+        --danger: #ff453a;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg3);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Auth card ── */
+    .auth-card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      max-width: 400px;
+      margin: 3rem auto;
+    }
+    .auth-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
+    .auth-card h1 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 4px; }
+    .auth-card .sub { font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 1.5rem; }
+
+    .tabs { display: flex; border: 0.5px solid var(--border2); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.25rem; }
+    .tab { flex: 1; padding: 9px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; background: none; color: var(--text2); transition: background 0.15s, color 0.15s; }
+    .tab.active { background: var(--text); color: var(--bg); }
+
+    .field { margin-bottom: 12px; }
+    .field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 4px; }
+    .inp-wrap { position: relative; }
+    .inp-wrap input, .field input {
+      width: 100%; padding: 9px 44px 9px 13px;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      font-size: 14px;
+      background: var(--bg2);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .inp-wrap input:focus, .field input:focus { border-color: var(--text2); }
+    .hint { font-size: 11px; color: var(--text2); margin-top: 3px; }
+    .eye {
+      position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--text2);
+      font-size: 12px; padding: 0;
+    }
+
+    .btn-full {
+      width: 100%; padding: 10px;
+      background: var(--text); color: var(--bg);
+      border: none; border-radius: var(--radius);
+      font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 4px;
+      transition: opacity 0.15s;
+    }
+    .btn-full:hover { opacity: 0.82; }
+
+    .msg-err { font-size: 12px; color: var(--danger); margin-top: 8px; text-align: center; min-height: 18px; }
+    .msg-ok  { font-size: 12px; color: var(--success); margin-top: 8px; text-align: center; min-height: 18px; }
+
+    /* ── Main header ── */
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .header h2 { font-size: 20px; font-weight: 600; }
+    .header .sub2 { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .user-badge {
+      font-size: 12px; color: var(--text2);
+      background: var(--bg2); padding: 5px 12px;
+      border-radius: var(--radius); border: 0.5px solid var(--border);
+    }
+    .btn-sm {
+      background: none; border: 0.5px solid var(--border2);
+      border-radius: var(--radius); padding: 5px 13px;
+      font-size: 12px; cursor: pointer; color: var(--text2);
+    }
+    .btn-sm:hover { background: var(--bg2); }
+
+    /* ── Stats ── */
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
+    .stat { background: var(--bg2); border-radius: var(--radius); padding: 1rem; }
+    .stat-lbl { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+    .stat-val { font-size: 22px; font-weight: 600; }
+    .stat-val.g { color: var(--success); }
+
+    /* ── Add form ── */
+    .add-box {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem; margin-bottom: 1.25rem;
+    }
+    .add-box h3 { font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: .85rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+    .form-row .field { margin-bottom: 0; }
+    .form-row .field input { padding: 8px 13px; }
+    .btn-add {
+      padding: 8px 20px;
+      background: var(--text); color: var(--bg);
+      border: none; border-radius: var(--radius);
+      font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    }
+    .btn-add:hover { opacity: 0.82; }
+
+    /* ── Search ── */
+    .search-bar { display: flex; gap: 8px; margin-bottom: .9rem; }
+    .search-bar input {
+      flex: 1; padding: 8px 13px;
+      border: 0.5px solid var(--border2); border-radius: var(--radius);
+      font-size: 13px; background: var(--bg2); color: var(--text); outline: none;
+    }
+    .sec-lbl { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 8px; }
+
+    /* ── Expense list ── */
+    .exp-list { display: flex; flex-direction: column; gap: 7px; }
+    .exp-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 11px 15px;
+    }
+    .exp-l { display: flex; align-items: center; gap: 10px; }
+    .exp-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--text2); font-weight: 500; flex-shrink: 0;
+    }
+    .exp-name { font-size: 14px; font-weight: 500; }
+    .exp-r { display: flex; align-items: center; gap: 12px; }
+    .exp-amt { font-size: 15px; font-weight: 600; }
+    .btn-del {
+      background: none; border: none; cursor: pointer;
+      color: var(--text2); font-size: 14px; padding: 4px 7px; border-radius: 5px;
+    }
+    .btn-del:hover { color: var(--danger); background: rgba(192,57,43,0.08); }
+
+    .empty { text-align: center; padding: 3rem 1rem; color: var(--text2); font-size: 13px; }
+
+    /* ── Toast ── */
+    .toast {
+      display: block;
+      background: var(--text); color: var(--bg);
+      padding: 9px 20px; border-radius: var(--radius);
+      font-size: 13px; text-align: center;
+      margin: 12px auto 0; max-width: 300px;
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 500px) {
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .form-row { grid-template-columns: 1fr 1fr; }
+      .btn-add { grid-column: 1 / -1; }
+      .auth-card { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ───── Auth Screen ───── -->
+  <div id="authScreen" class="screen active">
+    <div class="auth-card">
+      <div class="auth-icon">💰</div>
+      <h1>Expense Tracker</h1>
+      <p class="sub">Sign in or create your account</p>
+
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign in</button>
+        <button class="tab" id="tabReg" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Login -->
+      <div id="loginForm">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="liUser" placeholder="Your username" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="inp-wrap">
+            <input type="password" id="liPass" placeholder="Your password" autocomplete="current-password"
+              onkeydown="if(event.key==='Enter') doLogin()" />
+            <button class="eye" onclick="toggleEye('liPass', this)">show</button>
+          </div>
+        </div>
+        <button class="btn-full" onclick="doLogin()">Sign in</button>
+        <div class="msg-err" id="liErr"></div>
+      </div>
+
+      <!-- Register -->
+      <div id="regForm" style="display:none">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="rgUser" placeholder="Choose a username" autocomplete="off" />
+          <div class="hint">3–20 characters, letters and numbers only</div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="inp-wrap">
+            <input type="password" id="rgPass" placeholder="Choose a password" autocomplete="new-password" />
+            <button class="eye" onclick="toggleEye('rgPass', this)">show</button>
+          </div>
+          <div class="hint">At least 4 characters</div>
+        </div>
+        <div class="field">
+          <label>Confirm password</label>
+          <div class="inp-wrap">
+            <input type="password" id="rgPass2" placeholder="Repeat password" autocomplete="new-password"
+              onkeydown="if(event.key==='Enter') doRegister()" />
+            <button class="eye" onclick="toggleEye('rgPass2', this)">show</button>
+          </div>
+        </div>
+        <button class="btn-full" onclick="doRegister()">Create account</button>
+        <div class="msg-err" id="rgErr"></div>
+        <div class="msg-ok"  id="rgOk"></div>
+      </div>
+    </div>
+    <div class="toast" id="toastAuth"></div>
+  </div>
+
+  <!-- ───── Main Screen ───── -->
+  <div id="mainScreen" class="screen">
+    <div class="header">
+      <div>
+        <h2>Expense Tracker</h2>
+        <div class="sub2" id="welcomeMsg"></div>
+      </div>
+      <div class="header-right">
+        <span class="user-badge" id="userBadge"></span>
+        <button class="btn-sm" onclick="logout()">Sign out</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-lbl">Total expenses</div><div class="stat-val" id="sCount">0</div></div>
+      <div class="stat"><div class="stat-lbl">Total spent</div><div class="stat-val g" id="sTotal">₹0</div></div>
+      <div class="stat"><div class="stat-lbl">Average</div><div class="stat-val" id="sAvg">₹0</div></div>
+    </div>
+
+    <div class="add-box">
+      <h3>Add new expense</h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" id="expName" placeholder="e.g. Groceries" maxlength="29" />
+        </div>
+        <div class="field">
+          <label>Amount (₹)</label>
+          <input type="number" id="expAmt" placeholder="0" min="0"
+            onkeydown="if(event.key==='Enter') addExp()" />
+        </div>
+        <button class="btn-add" onclick="addExp()">+ Add</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="srch" placeholder="Search expenses..." oninput="render()" />
+    </div>
+    <div class="sec-lbl" id="secLbl">All expenses</div>
+    <div class="exp-list" id="expList"></div>
+    <div class="toast" id="toastMain"></div>
+  </div>
+
+</div>
+
+<script>
+  /* ── Storage helpers ── */
+  function loadUsers() {
+    try { return JSON.parse(localStorage.getItem('et_users') || '{}'); } catch { return {}; }
+  }
+  function saveUsers(u) { localStorage.setItem('et_users', JSON.stringify(u)); }
+
+  let users = loadUsers();
+  let currentUser = null;
+
+  function getExp() { return users[currentUser]?.expenses || []; }
+  function setExp(arr) { users[currentUser].expenses = arr; saveUsers(users); }
+
+  /* ── Utilities ── */
+  function toggleEye(id, btn) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+    btn.textContent = el.type === 'password' ? 'show' : 'hide';
+  }
+
+  function toast(msg, id) {
+    const t = document.getElementById(id);
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  /* ── Tab switch ── */
+  function switchTab(t) {
+    document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
+    document.getElementById('regForm').style.display   = t === 'register' ? 'block' : 'none';
+    document.getElementById('tabLogin').className = 'tab' + (t === 'login' ? ' active' : '');
+    document.getElementById('tabReg').className   = 'tab' + (t === 'register' ? ' active' : '');
+    ['liErr','rgErr','rgOk'].forEach(id => document.getElementById(id).textContent = '');
+  }
+
+  /* ── Auth ── */
+  function doLogin() {
+    const u = document.getElementById('liUser').value.trim();
+    const p = document.getElementById('liPass').value;
+    const err = document.getElementById('liErr');
+    if (!u || !p) { err.textContent = 'Please fill in all fields.'; return; }
+    if (!users[u]) { err.textContent = 'Username not found. Please register first.'; return; }
+    if (users[u].password !== p) { err.textContent = 'Incorrect password.'; return; }
+    err.textContent = '';
+    currentUser = u;
+    document.getElementById('authScreen').classList.remove('active');
+    document.getElementById('mainScreen').classList.add('active');
+    document.getElementById('userBadge').textContent = u;
+    document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + u + '!';
+    document.getElementById('liUser').value = '';
+    document.getElementById('liPass').value = '';
+    render(); updateStats();
+  }
+
+  function doRegister() {
+    const u  = document.getElementById('rgUser').value.trim();
+    const p  = document.getElementById('rgPass').value;
+    const p2 = document.getElementById('rgPass2').value;
+    const err = document.getElementById('rgErr');
+    const ok  = document.getElementById('rgOk');
+    err.textContent = ''; ok.textContent = '';
+    if (!u || !p || !p2)              { err.textContent = 'Please fill in all fields.'; return; }
+    if (!/^[a-zA-Z0-9]{3,20}$/.test(u)) { err.textContent = 'Username: 3–20 letters/numbers only.'; return; }
+    if (p.length < 4)                 { err.textContent = 'Password must be at least 4 characters.'; return; }
+    if (p !== p2)                     { err.textContent = 'Passwords do not match.'; return; }
+    if (users[u])                     { err.textContent = 'Username already taken. Choose another.'; return; }
+    users[u] = { password: p, expenses: [] };
+    saveUsers(users);
+    ok.textContent = 'Account created! Redirecting to sign in...';
+    document.getElementById('rgUser').value = '';
+    document.getElementById('rgPass').value = '';
+    document.getElementById('rgPass2').value = '';
+    setTimeout(() => switchTab('login'), 1500);
+  }
+
+  function logout() {
+    currentUser = null;
+    document.getElementById('mainScreen').classList.remove('active');
+    document.getElementById('authScreen').classList.add('active');
+    document.getElementById('srch').value = '';
+  }
+
+  /* ── Expense CRUD ── */
+  function addExp() {
+    const name = document.getElementById('expName').value.trim();
+    const amt  = parseInt(document.getElementById('expAmt').value);
+    if (!name)          { toast('Enter an expense name.', 'toastMain'); return; }
+    if (isNaN(amt) || amt < 0) { toast('Enter a valid amount.', 'toastMain'); return; }
+    const exp = getExp();
+    if (exp.length >= 20) { toast('Limit of 20 expenses reached.', 'toastMain'); return; }
+    exp.push({ name, amount: amt, id: Date.now() });
+    setExp(exp);
+    document.getElementById('expName').value = '';
+    document.getElementById('expAmt').value  = '';
+    document.getElementById('srch').value    = '';
+    render(); updateStats();
+    toast('Expense added!', 'toastMain');
+  }
+
+  function delExp(id) {
+    setExp(getExp().filter(e => e.id !== id));
+    render(); updateStats();
+    toast('Expense deleted.', 'toastMain');
+  }
+
+  function updateStats() {
+    const exp   = getExp();
+    const total = exp.reduce((s, e) => s + e.amount, 0);
+    const avg   = exp.length ? Math.round(total / exp.length) : 0;
+    document.getElementById('sCount').textContent = exp.length;
+    document.getElementById('sTotal').textContent = '₹' + total.toLocaleString('en-IN');
+    document.getElementById('sAvg').textContent   = '₹' + avg.toLocaleString('en-IN');
+  }
+
+  function render() {
+    const q   = document.getElementById('srch').value.trim().toLowerCase();
+    const all = getExp();
+    const list = q ? all.filter(e => e.name.toLowerCase().includes(q)) : all;
+    document.getElementById('secLbl').textContent =
+      q ? `Results for "${q}"` : all.length + ' expense' + (all.length !== 1 ? 's' : '');
+    const el = document.getElementById('expList');
+    if (!list.length) {
+      el.innerHTML = `<div class="empty">${q ? 'No expenses match your search.' : 'No expenses yet. Add your first one above.'}</div>`;
+      return;
+    }
+    el.innerHTML = list.map(e => `
+      <div class="exp-item">
+        <div class="exp-l">
+          <div class="exp-num">${all.indexOf(e) + 1}</div>
+          <div class="exp-name">${escHtml(e.name)}</div>
+        </div>
+        <div class="exp-r">
+          <div class="exp-amt">₹${e.amount.toLocaleString('en-IN')}</div>
+          <button class="btn-del" onclick="delExp(${e.id})" title="Delete">✕</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
