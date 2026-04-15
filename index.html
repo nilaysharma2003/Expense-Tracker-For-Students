@@ -10,28 +10,34 @@
     :root {
       --bg: #ffffff;
       --bg2: #f5f5f4;
-      --bg3: #eeedeb;
+      --bg3: #ededeb;
       --text: #1a1a1a;
       --text2: #6b6b6b;
-      --border: rgba(0,0,0,0.12);
-      --border2: rgba(0,0,0,0.22);
+      --border: rgba(0,0,0,0.10);
+      --border2: rgba(0,0,0,0.18);
+      --accent: #3b6ef6;
+      --accent-light: rgba(59,110,246,0.10);
       --success: #2d7a3a;
       --danger: #c0392b;
+      --danger-bg: rgba(192,57,43,0.08);
       --radius: 8px;
-      --radius-lg: 12px;
+      --radius-lg: 14px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #1c1c1e;
         --bg2: #2c2c2e;
-        --bg3: #3a3a3c;
+        --bg3: #111113;
         --text: #f2f2f7;
         --text2: #aeaeb2;
-        --border: rgba(255,255,255,0.10);
-        --border2: rgba(255,255,255,0.20);
+        --border: rgba(255,255,255,0.08);
+        --border2: rgba(255,255,255,0.18);
+        --accent: #5b8eff;
+        --accent-light: rgba(91,142,255,0.13);
         --success: #4cd964;
         --danger: #ff453a;
+        --danger-bg: rgba(255,69,58,0.10);
       }
     }
 
@@ -42,411 +48,367 @@
       min-height: 100vh;
     }
 
-    .app { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem; }
-    .screen { display: none; }
-    .screen.active { display: block; }
+    .app { max-width: 720px; margin: 0 auto; padding: 1.75rem 1rem 3rem; }
 
-    /* ── Auth card ── */
-    .auth-card {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 2.25rem 2rem;
-      max-width: 400px;
-      margin: 3rem auto;
+    /* ── Header ── */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem;
     }
-    .auth-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
-    .auth-card h1 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 4px; }
-    .auth-card .sub { font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 1.5rem; }
-
-    .tabs { display: flex; border: 0.5px solid var(--border2); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.25rem; }
-    .tab { flex: 1; padding: 9px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; background: none; color: var(--text2); transition: background 0.15s, color 0.15s; }
-    .tab.active { background: var(--text); color: var(--bg); }
-
-    .field { margin-bottom: 12px; }
-    .field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 4px; }
-    .inp-wrap { position: relative; }
-    .inp-wrap input, .field input {
-      width: 100%; padding: 9px 44px 9px 13px;
-      border: 0.5px solid var(--border2);
-      border-radius: var(--radius);
-      font-size: 14px;
-      background: var(--bg2);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .inp-wrap input:focus, .field input:focus { border-color: var(--text2); }
-    .hint { font-size: 11px; color: var(--text2); margin-top: 3px; }
-    .eye {
-      position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; cursor: pointer; color: var(--text2);
-      font-size: 12px; padding: 0;
-    }
-
-    .btn-full {
-      width: 100%; padding: 10px;
-      background: var(--text); color: var(--bg);
-      border: none; border-radius: var(--radius);
-      font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 4px;
-      transition: opacity 0.15s;
-    }
-    .btn-full:hover { opacity: 0.82; }
-
-    .msg-err { font-size: 12px; color: var(--danger); margin-top: 8px; text-align: center; min-height: 18px; }
-    .msg-ok  { font-size: 12px; color: var(--success); margin-top: 8px; text-align: center; min-height: 18px; }
-
-    /* ── Main header ── */
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-    .header h2 { font-size: 20px; font-weight: 600; }
-    .header .sub2 { font-size: 12px; color: var(--text2); margin-top: 2px; }
-    .header-right { display: flex; align-items: center; gap: 8px; }
-    .user-badge {
-      font-size: 12px; color: var(--text2);
-      background: var(--bg2); padding: 5px 12px;
-      border-radius: var(--radius); border: 0.5px solid var(--border);
-    }
-    .btn-sm {
+    .header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-left p  { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .btn-clear {
       background: none; border: 0.5px solid var(--border2);
-      border-radius: var(--radius); padding: 5px 13px;
+      border-radius: var(--radius); padding: 6px 14px;
       font-size: 12px; cursor: pointer; color: var(--text2);
+      transition: background 0.15s, color 0.15s;
     }
-    .btn-sm:hover { background: var(--bg2); }
+    .btn-clear:hover { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
 
     /* ── Stats ── */
-    .stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
-    .stat { background: var(--bg2); border-radius: var(--radius); padding: 1rem; }
-    .stat-lbl { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
-    .stat-val { font-size: 22px; font-weight: 600; }
-    .stat-val.g { color: var(--success); }
+    .stats {
+      display: grid; grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px; margin-bottom: 1.25rem;
+    }
+    .stat {
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1rem 1.1rem;
+    }
+    .stat-lbl { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .stat-val { font-size: 22px; font-weight: 700; }
+    .stat-val.accent { color: var(--accent); }
 
     /* ── Add form ── */
     .add-box {
       background: var(--bg);
       border: 0.5px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.1rem; margin-bottom: 1.25rem;
+      padding: 1.2rem 1.25rem; margin-bottom: 1.25rem;
     }
-    .add-box h3 { font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: .85rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
-    .form-row .field { margin-bottom: 0; }
-    .form-row .field input { padding: 8px 13px; }
+    .add-box-title {
+      font-size: 12px; font-weight: 600; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;
+    }
+    .form-row { display: grid; grid-template-columns: 2fr 1.2fr 1.4fr auto; gap: 8px; align-items: end; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 11px; color: var(--text2); font-weight: 500; }
+    .field input, .field select {
+      padding: 8px 11px;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius);
+      font-size: 13px;
+      background: var(--bg2);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
     .btn-add {
-      padding: 8px 20px;
-      background: var(--text); color: var(--bg);
+      padding: 8px 18px;
+      background: var(--accent); color: #fff;
       border: none; border-radius: var(--radius);
-      font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      white-space: nowrap; transition: opacity 0.15s;
+      align-self: end;
     }
-    .btn-add:hover { opacity: 0.82; }
+    .btn-add:hover { opacity: 0.87; }
 
-    /* ── Search ── */
-    .search-bar { display: flex; gap: 8px; margin-bottom: .9rem; }
-    .search-bar input {
-      flex: 1; padding: 8px 13px;
+    /* ── Chart ── */
+    .chart-box {
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+      margin-bottom: 1.25rem; display: none;
+    }
+    .chart-box.visible { display: block; }
+    .chart-title {
+      font-size: 12px; font-weight: 600; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: .9rem;
+    }
+    .chart-bars { display: flex; flex-direction: column; gap: 7px; }
+    .chart-row { display: flex; align-items: center; gap: 10px; }
+    .chart-cat { font-size: 12px; color: var(--text2); width: 90px; flex-shrink: 0; }
+    .chart-bar-wrap { flex: 1; background: var(--bg2); border-radius: 4px; height: 14px; overflow: hidden; }
+    .chart-bar { height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.4s ease; min-width: 2px; }
+    .chart-val { font-size: 12px; font-weight: 600; width: 70px; text-align: right; flex-shrink: 0; }
+
+    /* ── List ── */
+    .list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .sec-lbl { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+    .search-inp {
+      padding: 6px 12px;
       border: 0.5px solid var(--border2); border-radius: var(--radius);
-      font-size: 13px; background: var(--bg2); color: var(--text); outline: none;
+      font-size: 12px; background: var(--bg2); color: var(--text); outline: none;
+      width: 170px; transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .sec-lbl { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 8px; }
+    .search-inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
 
-    /* ── Expense list ── */
-    .exp-list { display: flex; flex-direction: column; gap: 7px; }
+    .exp-list { display: flex; flex-direction: column; gap: 6px; }
     .exp-item {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 11px 15px;
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius); padding: 11px 14px;
+      transition: border-color 0.15s;
     }
+    .exp-item:hover { border-color: var(--border2); }
     .exp-l { display: flex; align-items: center; gap: 10px; }
-    .exp-num {
-      width: 24px; height: 24px; border-radius: 50%;
-      background: var(--bg2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; color: var(--text2); font-weight: 500; flex-shrink: 0;
+    .cat-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     }
     .exp-name { font-size: 14px; font-weight: 500; }
+    .exp-cat-tag {
+      font-size: 10px; padding: 2px 7px; border-radius: 20px;
+      background: var(--bg2); color: var(--text2); font-weight: 500;
+    }
     .exp-r { display: flex; align-items: center; gap: 12px; }
-    .exp-amt { font-size: 15px; font-weight: 600; }
+    .exp-amt { font-size: 15px; font-weight: 700; }
     .btn-del {
       background: none; border: none; cursor: pointer;
       color: var(--text2); font-size: 14px; padding: 4px 7px; border-radius: 5px;
+      transition: color 0.15s, background 0.15s;
     }
-    .btn-del:hover { color: var(--danger); background: rgba(192,57,43,0.08); }
+    .btn-del:hover { color: var(--danger); background: var(--danger-bg); }
 
     .empty { text-align: center; padding: 3rem 1rem; color: var(--text2); font-size: 13px; }
+    .empty span { display: block; font-size: 30px; margin-bottom: 8px; }
 
     /* ── Toast ── */
     .toast {
-      display: block;
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
       background: var(--text); color: var(--bg);
-      padding: 9px 20px; border-radius: var(--radius);
-      font-size: 13px; text-align: center;
-      margin: 12px auto 0; max-width: 300px;
-      opacity: 0; transition: opacity 0.3s;
-      pointer-events: none;
+      padding: 9px 22px; border-radius: 30px;
+      font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity 0.25s; pointer-events: none;
+      white-space: nowrap; z-index: 99;
     }
     .toast.show { opacity: 1; }
 
-    @media (max-width: 500px) {
+    @media (max-width: 560px) {
       .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .form-row { grid-template-columns: 1fr 1fr; }
       .btn-add { grid-column: 1 / -1; }
-      .auth-card { padding: 1.5rem 1.25rem; }
+      .chart-cat { width: 70px; }
+      .search-inp { width: 130px; }
     }
   </style>
 </head>
 <body>
-
 <div class="app">
 
-  <!-- ───── Auth Screen ───── -->
-  <div id="authScreen" class="screen active">
-    <div class="auth-card">
-      <div class="auth-icon">💰</div>
-      <h1>Expense Tracker</h1>
-      <p class="sub">Sign in or create your account</p>
-
-      <div class="tabs">
-        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign in</button>
-        <button class="tab" id="tabReg" onclick="switchTab('register')">Register</button>
-      </div>
-
-      <!-- Login -->
-      <div id="loginForm">
-        <div class="field">
-          <label>Username</label>
-          <input type="text" id="liUser" placeholder="Your username" autocomplete="username" />
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <div class="inp-wrap">
-            <input type="password" id="liPass" placeholder="Your password" autocomplete="current-password"
-              onkeydown="if(event.key==='Enter') doLogin()" />
-            <button class="eye" onclick="toggleEye('liPass', this)">show</button>
-          </div>
-        </div>
-        <button class="btn-full" onclick="doLogin()">Sign in</button>
-        <div class="msg-err" id="liErr"></div>
-      </div>
-
-      <!-- Register -->
-      <div id="regForm" style="display:none">
-        <div class="field">
-          <label>Username</label>
-          <input type="text" id="rgUser" placeholder="Choose a username" autocomplete="off" />
-          <div class="hint">3–20 characters, letters and numbers only</div>
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <div class="inp-wrap">
-            <input type="password" id="rgPass" placeholder="Choose a password" autocomplete="new-password" />
-            <button class="eye" onclick="toggleEye('rgPass', this)">show</button>
-          </div>
-          <div class="hint">At least 4 characters</div>
-        </div>
-        <div class="field">
-          <label>Confirm password</label>
-          <div class="inp-wrap">
-            <input type="password" id="rgPass2" placeholder="Repeat password" autocomplete="new-password"
-              onkeydown="if(event.key==='Enter') doRegister()" />
-            <button class="eye" onclick="toggleEye('rgPass2', this)">show</button>
-          </div>
-        </div>
-        <button class="btn-full" onclick="doRegister()">Create account</button>
-        <div class="msg-err" id="rgErr"></div>
-        <div class="msg-ok"  id="rgOk"></div>
-      </div>
+  <div class="header">
+    <div class="header-left">
+      <h1>💸 Expense Tracker</h1>
+      <p id="dateStr"></p>
     </div>
-    <div class="toast" id="toastAuth"></div>
+    <button class="btn-clear" onclick="clearAll()">Clear all</button>
   </div>
 
-  <!-- ───── Main Screen ───── -->
-  <div id="mainScreen" class="screen">
-    <div class="header">
-      <div>
-        <h2>Expense Tracker</h2>
-        <div class="sub2" id="welcomeMsg"></div>
-      </div>
-      <div class="header-right">
-        <span class="user-badge" id="userBadge"></span>
-        <button class="btn-sm" onclick="logout()">Sign out</button>
-      </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-lbl">Expenses</div>
+      <div class="stat-val" id="sCount">0</div>
     </div>
+    <div class="stat">
+      <div class="stat-lbl">Total Spent</div>
+      <div class="stat-val accent" id="sTotal">₹0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Average</div>
+      <div class="stat-val" id="sAvg">₹0</div>
+    </div>
+  </div>
 
-    <div class="stats">
-      <div class="stat"><div class="stat-lbl">Total expenses</div><div class="stat-val" id="sCount">0</div></div>
-      <div class="stat"><div class="stat-lbl">Total spent</div><div class="stat-val g" id="sTotal">₹0</div></div>
-      <div class="stat"><div class="stat-lbl">Average</div><div class="stat-val" id="sAvg">₹0</div></div>
-    </div>
-
-    <div class="add-box">
-      <h3>Add new expense</h3>
-      <div class="form-row">
-        <div class="field">
-          <label>Name</label>
-          <input type="text" id="expName" placeholder="e.g. Groceries" maxlength="29" />
-        </div>
-        <div class="field">
-          <label>Amount (₹)</label>
-          <input type="number" id="expAmt" placeholder="0" min="0"
-            onkeydown="if(event.key==='Enter') addExp()" />
-        </div>
-        <button class="btn-add" onclick="addExp()">+ Add</button>
+  <!-- Add form -->
+  <div class="add-box">
+    <div class="add-box-title">Add New Expense</div>
+    <div class="form-row">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="expName" placeholder="e.g. Groceries" maxlength="30" />
       </div>
+      <div class="field">
+        <label>Amount (₹)</label>
+        <input type="number" id="expAmt" placeholder="0" min="0"
+          onkeydown="if(event.key==='Enter') addExp()" />
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="expCat">
+          <option value="Food">🍔 Food</option>
+          <option value="Transport">🚌 Transport</option>
+          <option value="Shopping">🛍️ Shopping</option>
+          <option value="Health">💊 Health</option>
+          <option value="Education">📚 Education</option>
+          <option value="Entertainment">🎮 Entertainment</option>
+          <option value="Utilities">💡 Utilities</option>
+          <option value="Other">📦 Other</option>
+        </select>
+      </div>
+      <button class="btn-add" onclick="addExp()">+ Add</button>
     </div>
+  </div>
 
-    <div class="search-bar">
-      <input type="text" id="srch" placeholder="Search expenses..." oninput="render()" />
-    </div>
+  <!-- Chart -->
+  <div class="chart-box" id="chartBox">
+    <div class="chart-title">Spending by Category</div>
+    <div class="chart-bars" id="chartBars"></div>
+  </div>
+
+  <!-- List -->
+  <div class="list-header">
     <div class="sec-lbl" id="secLbl">All expenses</div>
-    <div class="exp-list" id="expList"></div>
-    <div class="toast" id="toastMain"></div>
+    <input class="search-inp" type="text" id="srch" placeholder="🔍 Search..." oninput="render()" />
   </div>
+  <div class="exp-list" id="expList"></div>
 
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-  /* ── Storage helpers ── */
-  function loadUsers() {
-    try { return JSON.parse(localStorage.getItem('et_users') || '{}'); } catch { return {}; }
+  const CAT_COLORS = {
+    Food: '#f06a3a', Transport: '#3b6ef6', Shopping: '#a855f7',
+    Health: '#e84393', Education: '#0ea5e9', Entertainment: '#f59e0b',
+    Utilities: '#10b981', Other: '#6b7280'
+  };
+
+  /* ── Storage ── */
+  function load() {
+    try { return JSON.parse(localStorage.getItem('et_exps') || '[]'); } catch { return []; }
   }
-  function saveUsers(u) { localStorage.setItem('et_users', JSON.stringify(u)); }
+  function save(arr) { localStorage.setItem('et_exps', JSON.stringify(arr)); }
 
-  let users = loadUsers();
-  let currentUser = null;
+  let expenses = load();
 
-  function getExp() { return users[currentUser]?.expenses || []; }
-  function setExp(arr) { users[currentUser].expenses = arr; saveUsers(users); }
-
-  /* ── Utilities ── */
-  function toggleEye(id, btn) {
-    const el = document.getElementById(id);
-    el.type = el.type === 'password' ? 'text' : 'password';
-    btn.textContent = el.type === 'password' ? 'show' : 'hide';
+  /* ── Date ── */
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function setDate() {
+    const d = new Date();
+    document.getElementById('dateStr').textContent =
+      days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
+  setDate();
 
-  function toast(msg, id) {
-    const t = document.getElementById(id);
+  /* ── Toast ── */
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2400);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
   }
 
-  /* ── Tab switch ── */
-  function switchTab(t) {
-    document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
-    document.getElementById('regForm').style.display   = t === 'register' ? 'block' : 'none';
-    document.getElementById('tabLogin').className = 'tab' + (t === 'login' ? ' active' : '');
-    document.getElementById('tabReg').className   = 'tab' + (t === 'register' ? ' active' : '');
-    ['liErr','rgErr','rgOk'].forEach(id => document.getElementById(id).textContent = '');
+  /* ── Stats ── */
+  function updateStats() {
+    const total = expenses.reduce((s, e) => s + e.amount, 0);
+    const avg   = expenses.length ? Math.round(total / expenses.length) : 0;
+    document.getElementById('sCount').textContent = expenses.length;
+    document.getElementById('sTotal').textContent = '₹' + fmt(total);
+    document.getElementById('sAvg').textContent   = '₹' + fmt(avg);
   }
 
-  /* ── Auth ── */
-  function doLogin() {
-    const u = document.getElementById('liUser').value.trim();
-    const p = document.getElementById('liPass').value;
-    const err = document.getElementById('liErr');
-    if (!u || !p) { err.textContent = 'Please fill in all fields.'; return; }
-    if (!users[u]) { err.textContent = 'Username not found. Please register first.'; return; }
-    if (users[u].password !== p) { err.textContent = 'Incorrect password.'; return; }
-    err.textContent = '';
-    currentUser = u;
-    document.getElementById('authScreen').classList.remove('active');
-    document.getElementById('mainScreen').classList.add('active');
-    document.getElementById('userBadge').textContent = u;
-    document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + u + '!';
-    document.getElementById('liUser').value = '';
-    document.getElementById('liPass').value = '';
-    render(); updateStats();
+  /* ── Chart ── */
+  function updateChart() {
+    const box = document.getElementById('chartBox');
+    if (!expenses.length) { box.classList.remove('visible'); return; }
+    box.classList.add('visible');
+
+    const totals = {};
+    expenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + e.amount; });
+    const sorted = Object.entries(totals).sort((a,b) => b[1]-a[1]);
+    const max = sorted[0][1];
+
+    document.getElementById('chartBars').innerHTML = sorted.map(([cat, val]) => `
+      <div class="chart-row">
+        <div class="chart-cat">${cat}</div>
+        <div class="chart-bar-wrap">
+          <div class="chart-bar" style="width:${Math.round(val/max*100)}%;background:${CAT_COLORS[cat]||'#6b7280'}"></div>
+        </div>
+        <div class="chart-val">₹${fmt(val)}</div>
+      </div>`).join('');
   }
 
-  function doRegister() {
-    const u  = document.getElementById('rgUser').value.trim();
-    const p  = document.getElementById('rgPass').value;
-    const p2 = document.getElementById('rgPass2').value;
-    const err = document.getElementById('rgErr');
-    const ok  = document.getElementById('rgOk');
-    err.textContent = ''; ok.textContent = '';
-    if (!u || !p || !p2)              { err.textContent = 'Please fill in all fields.'; return; }
-    if (!/^[a-zA-Z0-9]{3,20}$/.test(u)) { err.textContent = 'Username: 3–20 letters/numbers only.'; return; }
-    if (p.length < 4)                 { err.textContent = 'Password must be at least 4 characters.'; return; }
-    if (p !== p2)                     { err.textContent = 'Passwords do not match.'; return; }
-    if (users[u])                     { err.textContent = 'Username already taken. Choose another.'; return; }
-    users[u] = { password: p, expenses: [] };
-    saveUsers(users);
-    ok.textContent = 'Account created! Redirecting to sign in...';
-    document.getElementById('rgUser').value = '';
-    document.getElementById('rgPass').value = '';
-    document.getElementById('rgPass2').value = '';
-    setTimeout(() => switchTab('login'), 1500);
-  }
-
-  function logout() {
-    currentUser = null;
-    document.getElementById('mainScreen').classList.remove('active');
-    document.getElementById('authScreen').classList.add('active');
-    document.getElementById('srch').value = '';
-  }
-
-  /* ── Expense CRUD ── */
+  /* ── CRUD ── */
   function addExp() {
     const name = document.getElementById('expName').value.trim();
     const amt  = parseInt(document.getElementById('expAmt').value);
-    if (!name)          { toast('Enter an expense name.', 'toastMain'); return; }
-    if (isNaN(amt) || amt < 0) { toast('Enter a valid amount.', 'toastMain'); return; }
-    const exp = getExp();
-    if (exp.length >= 20) { toast('Limit of 20 expenses reached.', 'toastMain'); return; }
-    exp.push({ name, amount: amt, id: Date.now() });
-    setExp(exp);
+    const cat  = document.getElementById('expCat').value;
+    if (!name)             { toast('⚠️ Enter an expense name.'); return; }
+    if (isNaN(amt)||amt<0) { toast('⚠️ Enter a valid amount.'); return; }
+    if (expenses.length >= 50) { toast('⚠️ Limit of 50 expenses reached.'); return; }
+    expenses.push({ id: Date.now(), name, amount: amt, category: cat });
+    save(expenses);
     document.getElementById('expName').value = '';
     document.getElementById('expAmt').value  = '';
     document.getElementById('srch').value    = '';
-    render(); updateStats();
-    toast('Expense added!', 'toastMain');
+    refresh();
+    toast('✅ Expense added!');
   }
 
   function delExp(id) {
-    setExp(getExp().filter(e => e.id !== id));
-    render(); updateStats();
-    toast('Expense deleted.', 'toastMain');
+    expenses = expenses.filter(e => e.id !== id);
+    save(expenses);
+    refresh();
+    toast('🗑️ Deleted.');
   }
 
-  function updateStats() {
-    const exp   = getExp();
-    const total = exp.reduce((s, e) => s + e.amount, 0);
-    const avg   = exp.length ? Math.round(total / exp.length) : 0;
-    document.getElementById('sCount').textContent = exp.length;
-    document.getElementById('sTotal').textContent = '₹' + total.toLocaleString('en-IN');
-    document.getElementById('sAvg').textContent   = '₹' + avg.toLocaleString('en-IN');
+  function clearAll() {
+    if (!expenses.length) { toast('Nothing to clear.'); return; }
+    if (!confirm('Clear all expenses?')) return;
+    expenses = [];
+    save(expenses);
+    refresh();
+    toast('All cleared.');
   }
 
+  /* ── Render ── */
   function render() {
-    const q   = document.getElementById('srch').value.trim().toLowerCase();
-    const all = getExp();
-    const list = q ? all.filter(e => e.name.toLowerCase().includes(q)) : all;
+    const q    = document.getElementById('srch').value.trim().toLowerCase();
+    const list = q ? expenses.filter(e =>
+      e.name.toLowerCase().includes(q) || e.category.toLowerCase().includes(q)) : expenses;
+
     document.getElementById('secLbl').textContent =
-      q ? `Results for "${q}"` : all.length + ' expense' + (all.length !== 1 ? 's' : '');
+      q ? `Results for "${q}" (${list.length})` : `${expenses.length} expense${expenses.length!==1?'s':''}`;
+
     const el = document.getElementById('expList');
     if (!list.length) {
-      el.innerHTML = `<div class="empty">${q ? 'No expenses match your search.' : 'No expenses yet. Add your first one above.'}</div>`;
+      el.innerHTML = `<div class="empty"><span>${q ? '🔍' : '📭'}</span>${q ? 'No matches found.' : 'No expenses yet. Add your first one above.'}</div>`;
       return;
     }
-    el.innerHTML = list.map(e => `
+
+    // Show newest first
+    const sorted = [...list].reverse();
+    el.innerHTML = sorted.map((e, i) => `
       <div class="exp-item">
         <div class="exp-l">
-          <div class="exp-num">${all.indexOf(e) + 1}</div>
-          <div class="exp-name">${escHtml(e.name)}</div>
+          <div class="cat-dot" style="background:${CAT_COLORS[e.category]||'#6b7280'}"></div>
+          <div>
+            <div class="exp-name">${esc(e.name)}</div>
+          </div>
+          <div class="exp-cat-tag">${e.category}</div>
         </div>
         <div class="exp-r">
-          <div class="exp-amt">₹${e.amount.toLocaleString('en-IN')}</div>
+          <div class="exp-amt">₹${fmt(e.amount)}</div>
           <button class="btn-del" onclick="delExp(${e.id})" title="Delete">✕</button>
         </div>
       </div>`).join('');
   }
 
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  function refresh() { updateStats(); updateChart(); render(); }
+
+  function fmt(n)  { return n.toLocaleString('en-IN'); }
+  function esc(s)  { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // Init
+  refresh();
 </script>
 </body>
 </html>
